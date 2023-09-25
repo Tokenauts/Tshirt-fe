@@ -149,7 +149,7 @@ const Product = () => {
   };
 
   return (
-    <div className="flex w-full h-screen p-12 bg-slate-900     max-w-7xl mx-auto">
+    <div className="flex w-full h-full p-12 bg-slate-900     max-w-7xl mx-auto">
       {/* Video Section */}
       <motion.div
         className="flex-1 p-6 bg-slate-900 rounded-lg"
