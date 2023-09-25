@@ -1,0 +1,338 @@
+[
+  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "collectionId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "CollectionAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "FundsWithdrawn",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "buyer",
+        "type": "address"
+      }
+    ],
+    "name": "OrderPlaced",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newStatus",
+        "type": "string"
+      }
+    ],
+    "name": "OrderStatusUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "productId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "ProductAdded",
+    "type": "event"
+  },
+  {
+    "inputs": [{ "internalType": "string", "name": "_name", "type": "string" }],
+    "name": "addCollection",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "id", "type": "uint256" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "string", "name": "description", "type": "string" },
+          { "internalType": "uint256", "name": "price", "type": "uint256" },
+          {
+            "internalType": "string[]",
+            "name": "fileHashes",
+            "type": "string[]"
+          },
+          {
+            "internalType": "string[]",
+            "name": "fileTypes",
+            "type": "string[]"
+          },
+          { "internalType": "string", "name": "category", "type": "string" },
+          {
+            "internalType": "uint256",
+            "name": "collectionId",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct EcommerceStore.Product[]",
+        "name": "_products",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "addProducts",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "_productIds",
+        "type": "uint256[]"
+      },
+      { "internalType": "string[]", "name": "_sizes", "type": "string[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_quantities",
+        "type": "uint256[]"
+      },
+      { "internalType": "string", "name": "_deliveryAddress", "type": "string" }
+    ],
+    "name": "buyProducts",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "collectionCount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "collectionsById",
+    "outputs": [
+      { "internalType": "uint256", "name": "id", "type": "uint256" },
+      { "internalType": "string", "name": "name", "type": "string" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "name": "collectionsByName",
+    "outputs": [
+      { "internalType": "uint256", "name": "id", "type": "uint256" },
+      { "internalType": "string", "name": "name", "type": "string" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_productId", "type": "uint256" }
+    ],
+    "name": "deleteProduct",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_orderId", "type": "uint256" }
+    ],
+    "name": "getOrderById",
+    "outputs": [
+      { "internalType": "uint256", "name": "id", "type": "uint256" },
+      { "internalType": "address", "name": "buyer", "type": "address" },
+      {
+        "internalType": "uint256[]",
+        "name": "productIds",
+        "type": "uint256[]"
+      },
+      { "internalType": "string[]", "name": "sizes", "type": "string[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "quantities",
+        "type": "uint256[]"
+      },
+      { "internalType": "string", "name": "status", "type": "string" },
+      { "internalType": "string", "name": "deliveryAddress", "type": "string" },
+      { "internalType": "string", "name": "trackingLink", "type": "string" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "user", "type": "address" }
+    ],
+    "name": "getOrdersByUser",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_productId", "type": "uint256" }
+    ],
+    "name": "getProductById",
+    "outputs": [
+      { "internalType": "uint256", "name": "id", "type": "uint256" },
+      { "internalType": "string", "name": "name", "type": "string" },
+      { "internalType": "string", "name": "description", "type": "string" },
+      { "internalType": "uint256", "name": "price", "type": "uint256" },
+      { "internalType": "string[]", "name": "fileHashes", "type": "string[]" },
+      { "internalType": "string[]", "name": "fileTypes", "type": "string[]" },
+      { "internalType": "string", "name": "category", "type": "string" },
+      { "internalType": "uint256", "name": "collectionId", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "orderCount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "orders",
+    "outputs": [
+      { "internalType": "uint256", "name": "id", "type": "uint256" },
+      { "internalType": "address", "name": "buyer", "type": "address" },
+      { "internalType": "string", "name": "status", "type": "string" },
+      { "internalType": "string", "name": "deliveryAddress", "type": "string" },
+      { "internalType": "string", "name": "trackingLink", "type": "string" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "ordersByUser",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "productCount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "products",
+    "outputs": [
+      { "internalType": "uint256", "name": "id", "type": "uint256" },
+      { "internalType": "string", "name": "name", "type": "string" },
+      { "internalType": "string", "name": "description", "type": "string" },
+      { "internalType": "uint256", "name": "price", "type": "uint256" },
+      { "internalType": "string", "name": "category", "type": "string" },
+      { "internalType": "uint256", "name": "collectionId", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSales",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256[]", "name": "_orderIds", "type": "uint256[]" },
+      { "internalType": "string[]", "name": "_statuses", "type": "string[]" },
+      {
+        "internalType": "string[]",
+        "name": "_trackingLinks",
+        "type": "string[]"
+      }
+    ],
+    "name": "updateOrderStatuses",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
