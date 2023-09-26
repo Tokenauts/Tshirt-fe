@@ -80,28 +80,14 @@ const Product = () => {
   };
 
   // Remove from Cart (To be called when needed)
-  const removeFromCart = async (productId, size) => {
-    const userId = address; // Assuming the wallet address is the user ID.
-    try {
-      const response = await fetch("http://localhost:3001/removefromcart", {
-        // Replace with your backend URL
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, productId, size }),
-      });
-
-      const data = await response.json();
-      setCart(data);
-    } catch (err) {
-      console.error("Failed to remove from cart:", err);
-    }
-  };
 
   // Fetch cart (Call this function in useEffect or whenever needed)
   const getCart = async () => {
     const userId = address; // Assuming the wallet address is the user ID.
     try {
-      const response = await fetch(`http://localhost:3001/getcart/${userId}`); // Replace with your backend URL
+      const response = await fetch(
+        `https://cooperative-shoulder-pads-colt.cyclic.cloud/${userId}`
+      ); // Replace with your backend URL
       const data = await response.json();
       setCart(data);
     } catch (err) {

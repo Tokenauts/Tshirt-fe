@@ -30,7 +30,9 @@ const Cart = () => {
   };
   const fetchCartFromServer = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/getCart/${address}`);
+      const response = await fetch(
+        `https://cooperative-shoulder-pads-colt.cyclic.cloud/${address}`
+      );
       const serverCart = await response.json();
       setCart(serverCart);
     } catch (error) {
@@ -54,19 +56,22 @@ const Cart = () => {
     const Tprice = cartItem.price.toString(); // Convert price to a string if it isn't already
 
     try {
-      const response = await fetch("http://localhost:3001/updatecart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          productId,
-          quantity: cartItem.quantity,
-          size: selectedSize,
-          fileHash: cartItem.fileHash, // Assuming each cart item has a fileHash property
-          name: cartItem.name,
-          price: Tprice,
-        }),
-      });
+      const response = await fetch(
+        "https://cooperative-shoulder-pads-colt.cyclic.cloud/updatecart",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            productId,
+            quantity: cartItem.quantity,
+            size: selectedSize,
+            fileHash: cartItem.fileHash, // Assuming each cart item has a fileHash property
+            name: cartItem.name,
+            price: Tprice,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
