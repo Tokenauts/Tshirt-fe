@@ -16,7 +16,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCartData = async () => {
       const response = await fetch(
-        `https://cooperative-shoulder-pads-colt.cyclic.cloud/${address}`
+        `https://cooperative-shoulder-pads-colt.cyclic.cloud/getcart/${address}`
       );
       const cartData = await response.json();
 

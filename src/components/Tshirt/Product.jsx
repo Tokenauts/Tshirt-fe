@@ -89,7 +89,7 @@ const Product = () => {
     const userId = address; // Assuming the wallet address is the user ID.
     try {
       const response = await fetch(
-        `https://cooperative-shoulder-pads-colt.cyclic.cloud/${userId}`
+        `https://cooperative-shoulder-pads-colt.cyclic.cloud/getcart/${userId}`
       ); // Replace with your backend URL
       const data = await response.json();
       setCart(data);
