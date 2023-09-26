@@ -51,20 +51,23 @@ const Product = () => {
     const Tprice = product.price.toString(); // Convert the BigInt price to a string
 
     try {
-      const response = await fetch("http://localhost:3001/addtocart", {
-        // Replace with your backend URL
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          productId: product.id,
-          quantity: 1, // You can change this to let the user specify a quantity
-          size: selectedSize,
-          fileHash: videoHash,
-          name: product.name,
-          price: Tprice, // Using the string-converted price
-        }),
-      });
+      const response = await fetch(
+        "https://cooperative-shoulder-pads-colt.cyclic.cloud/addtocart",
+        {
+          // Replace with your backend URL
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            productId: product.id,
+            quantity: 1, // You can change this to let the user specify a quantity
+            size: selectedSize,
+            fileHash: videoHash,
+            name: product.name,
+            price: Tprice, // Using the string-converted price
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
