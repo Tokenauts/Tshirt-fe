@@ -18,23 +18,28 @@ const Navbar = () => {
       const response = await fetch(`http://localhost:3001/getCart/${address}`);
       const cartData = await response.json();
 
-      const totalItems = cartData.reduce(
+      // Assuming cartData.items is an array of items in the cart
+      const totalItems = cartData.items.reduce(
         (accum, item) => accum + item.quantity,
         0
       );
       setCartItemCount(totalItems);
     };
 
-    fetchCartData();
+    if (address) {
+      fetchCartData();
+    }
+
     const handleCartUpdate = () => {
       fetchCartData();
     };
 
     window.addEventListener("cartUpdated", handleCartUpdate);
+
     return () => {
       window.removeEventListener("cartUpdated", handleCartUpdate);
     };
-  }, []);
+  }, [address]); // Adding address to dependency array
 
   return (
     <div className="w-full mx-auto 2xl:max-w-7xl relative z-50 rounded-xl max-w-7xl">

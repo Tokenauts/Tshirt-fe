@@ -13,7 +13,7 @@ function App() {
   return (
     <Router>
       <div className="bg-slate-900">
-        {/* <Navbar /> */}
+        <Navbar />
         <Routes>
           <Route path="/admin" element={<Admin />} />
           <Route path="/" element={<Home />} />

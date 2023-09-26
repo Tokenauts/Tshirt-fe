@@ -5,7 +5,7 @@ import { useAccount } from "wagmi";
 const contractaddress = "0x6edA69F4367deD9221aF2d96ADbEb52b139e9aCE";
 
 const Cart = () => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState({ items: [] });
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const { address, isConnecting, isDisconnected } = useAccount();
   const [step, setStep] = useState(1);
@@ -28,7 +28,6 @@ const Cart = () => {
       setStep(step - 1);
     }
   };
-
   const fetchCartFromServer = async () => {
     try {
       const response = await fetch(`http://localhost:3001/getCart/${address}`);
@@ -39,43 +38,55 @@ const Cart = () => {
     }
   };
 
-  const updateCartOnServer = async (updatedCart) => {
+  const updateQuantity = async (productId, selectedSize, change = 1) => {
+    // Step 1: Identify the cart item
+    const cartItem = cart.items.find(
+      (item) => item.productId === productId && item.size === selectedSize
+    );
+
+    if (!cartItem) return; // exit if the item isn't found
+
+    // Step 2: Update quantity locally (you could do this after the server updates, depending on your needs)
+    cartItem.quantity += change;
+
+    // Step 3: Update the server
+    const userId = address; // Assuming the wallet address is the user ID
+    const Tprice = cartItem.price.toString(); // Convert price to a string if it isn't already
+
     try {
-      await fetch(`http://localhost:3001/updateCart/${address}`, {
+      const response = await fetch("http://localhost:3001/updatecart", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ cart: updatedCart }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          productId,
+          quantity: cartItem.quantity,
+          size: selectedSize,
+          fileHash: cartItem.fileHash, // Assuming each cart item has a fileHash property
+          name: cartItem.name,
+          price: Tprice,
+        }),
       });
-      const event = new Event("cartUpdated");
-      window.dispatchEvent(event);
-    } catch (error) {
-      console.error("Error updating cart on server:", error);
-    }
-  };
 
-  const updateQuantity = (productID, size, change) => {
-    let updatedCart = cart.map((item) => {
-      if (item.product.id === productID && item.size === size) {
-        return { ...item, quantity: item.quantity + change };
+      if (response.ok) {
+        const data = await response.json();
+        setCart(data);
+        const event = new Event("cartUpdated");
+        window.dispatchEvent(event);
+      } else {
+        console.log("Failed to update cart. HTTP Status:", response.status);
       }
-      return item;
-    });
-
-    // Remove items with quantity 0
-    updatedCart = updatedCart.filter((item) => item.quantity > 0);
-
-    setCart(updatedCart);
-    updateCartOnServer(updatedCart);
+    } catch (err) {
+      console.error("Failed to update cart:", err);
+    }
   };
 
   useEffect(() => {
     fetchCartFromServer();
   }, []);
 
-  const totalCost = cart.reduce(
-    (total, item) => total + parseInt(item.product.price) * item.quantity,
+  const totalCost = cart.items.reduce(
+    (total, item) => total + parseInt(item.price || 0) * item.quantity,
     0
   );
 
@@ -151,28 +162,23 @@ const Cart = () => {
         {step === 1 && (
           <>
             <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
-            {cart.map((item, index) => (
+            {cart.items.map((item, index) => (
               <div key={index} className="flex mb-4 p-4 border rounded-lg">
                 <video
-                  src={item.product.fileHash[1]}
+                  src={item.fileHash}
                   className="w-1/4 object-cover rounded-lg"
                   autoPlay
                   muted
                   loop
                 ></video>
                 <div className="ml-4 flex-1">
-                  <h3 className="text-lg font-semibold">{item.product.name}</h3>
-                  <p className="text-gray-500 text-sm mt-2">
-                    {item.product.description}
-                  </p>
-                  <p className="text-gray-600 mt-2">
-                    Category: {item.product.category}
-                  </p>
+                  <h3 className="text-lg font-semibold">{item.name}</h3>
+
                   <p className="text-gray-600">Size: {item.size}</p>
                   <div className="flex items-center mt-2">
                     <button
                       onClick={() =>
-                        updateQuantity(item.product.id, item.size, -1)
+                        updateQuantity(item.productId, item.size, -1)
                       }
                       className="border px-2 py-1 rounded-l-md"
                     >
@@ -183,7 +189,7 @@ const Cart = () => {
                     </span>
                     <button
                       onClick={() =>
-                        updateQuantity(item.product.id, item.size, 1)
+                        updateQuantity(item.productId, item.size, 1)
                       }
                       className="border px-2 py-1 rounded-r-md"
                     >
@@ -194,7 +200,7 @@ const Cart = () => {
               </div>
             ))}
 
-            {cart.length === 0 && <p>Your cart is empty.</p>}
+            {cart.items.length === 0 && <p>Your cart is empty.</p>}
             <div className="mt-6 text-right">
               <p className="text-xl">Total Cost: ${totalCost.toFixed(2)}</p>
             </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useContractWrite } from "wagmi";
-import ABI from "../../utils/abi.json";
+
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 import Loading from "../loading";
@@ -17,41 +16,6 @@ const Product = () => {
   const { address, isConnecting, isDisconnected } = useAccount();
   const [isLoading, setIsLoading] = useState(true); // New state for loading
 
-  const { write: buyProductWrite } = useContractWrite({
-    address: contractaddress,
-    abi: ABI,
-    functionName: "buyProduct",
-  });
-
-  const updateCartOnServer = async (updatedCart) => {
-    try {
-      const cartData = { cart: updatedCart };
-      console.log("Sending cart data:", cartData);
-      await fetch(`http://localhost:3001/updateCart/${address}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ cart: updatedCart }),
-      });
-
-      // Dispatch the event only after the server update is complete:
-      const event = new Event("cartUpdated");
-      window.dispatchEvent(event);
-    } catch (error) {
-      console.error("Error updating cart on server:", error);
-    }
-  };
-
-  const fetchCartFromServer = async () => {
-    try {
-      // const response = await fetch(`http://localhost:3001/getCart/${address}`);
-      // const serverCart = await response.json();
-      // setCart(serverCart);
-    } catch (error) {
-      console.error("Error fetching cart from server:", error);
-    }
-  };
   const videoHash = product?.fileTypes.includes("video")
     ? product.fileHashes[product.fileTypes.indexOf("video")]
     : null;
@@ -60,16 +24,11 @@ const Product = () => {
     : null;
 
   useEffect(() => {
-    fetchCartFromServer();
-  }, []);
-
-  useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
           `https://cooperative-shoulder-pads-colt.cyclic.cloud/products/${id}`
         );
-        console.log(response);
         if (!response.ok) {
           throw new Error("Failed to fetch product details.");
         }
@@ -86,39 +45,67 @@ const Product = () => {
     fetchProduct();
   }, [id]);
 
-  const findCartItemBySize = (productId, size) => {
-    return cart.find(
-      (item) => item.product.id === productId && item.size === size
-    );
-  };
+  // Add to Cart
+  const addToCart = async (product, selectedSize) => {
+    const userId = address; // Assuming the wallet address is the user ID.
+    const Tprice = product.price.toString(); // Convert the BigInt price to a string
 
-  const addToCart = (product, size) => {
-    const existingCartItem = findCartItemBySize(product.id, size);
-    if (existingCartItem) {
-      const updatedCart = cart.map((item) =>
-        item.product.id === product.id && item.size === size
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-      setCart(updatedCart);
-      updateCartOnServer(updatedCart);
-    } else {
-      const updatedCart = [...cart, { product, size, quantity: 1 }];
-      setCart(updatedCart);
-      updateCartOnServer(updatedCart);
+    try {
+      const response = await fetch("http://localhost:3001/addtocart", {
+        // Replace with your backend URL
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          productId: product.id,
+          quantity: 1, // You can change this to let the user specify a quantity
+          size: selectedSize,
+          fileHash: videoHash,
+          name: product.name,
+          price: Tprice, // Using the string-converted price
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCart(data);
+        const event = new Event("cartUpdated");
+        window.dispatchEvent(event);
+      } else {
+        console.log("Failed to add to cart. HTTP Status:", response.status); // Debug line
+      }
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
     }
   };
 
-  const handleBuyProduct = async () => {
+  // Remove from Cart (To be called when needed)
+  const removeFromCart = async (productId, size) => {
+    const userId = address; // Assuming the wallet address is the user ID.
     try {
-      await buyProductWrite({
-        args: [product.id, selectedSize, deliveryAddress],
-        value: product.price,
+      const response = await fetch("http://localhost:3001/removefromcart", {
+        // Replace with your backend URL
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, productId, size }),
       });
-      alert("Product purchased successfully!");
-    } catch (error) {
-      console.error("Error buying product:", error);
-      alert("Failed to buy product.");
+
+      const data = await response.json();
+      setCart(data);
+    } catch (err) {
+      console.error("Failed to remove from cart:", err);
+    }
+  };
+
+  // Fetch cart (Call this function in useEffect or whenever needed)
+  const getCart = async () => {
+    const userId = address; // Assuming the wallet address is the user ID.
+    try {
+      const response = await fetch(`http://localhost:3001/getcart/${userId}`); // Replace with your backend URL
+      const data = await response.json();
+      setCart(data);
+    } catch (err) {
+      console.error("Failed to get cart:", err);
     }
   };
 
