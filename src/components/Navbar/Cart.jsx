@@ -31,7 +31,7 @@ const Cart = () => {
   const fetchCartFromServer = async () => {
     try {
       const response = await fetch(
-        `https://cooperative-shoulder-pads-colt.cyclic.cloud/${address}`
+        `https://cooperative-shoulder-pads-colt.cyclic.cloud/getcart/${address}`
       );
       const serverCart = await response.json();
       setCart(serverCart);
