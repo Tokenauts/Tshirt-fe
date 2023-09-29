@@ -5,6 +5,12 @@ import { useAccount } from "wagmi";
 import Notification from "./Notification";
 const contractaddress = "0x6edA69F4367deD9221aF2d96ADbEb52b139e9aCE";
 import { motion, AnimatePresence } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheckCircle,
+  faTruck,
+  faReceipt,
+} from "@fortawesome/free-solid-svg-icons";
 const Cart = () => {
   const [cart, setCart] = useState({ items: [] });
   const [deliveryAddress, setDeliveryAddress] = useState("");
@@ -169,7 +175,7 @@ const Cart = () => {
 
   if (transactionComplete) {
     return (
-      <div className="flex flex-col items-center justify-center max-w-screen-lg mx-auto p-8 text-gray-50 min-h-screen bg-slate-900">
+      <div className="flex flex-col items-center justify-center max-w-screen-lg mx-auto p-8 min-h-screen bg-slate-900">
         {showNotification && (
           <div className="fixed top-0 right-0 z-50">
             <AnimatePresence>
