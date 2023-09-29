@@ -12,6 +12,7 @@ const Cart = () => {
   const [step, setStep] = useState(1);
   const [transactionHash, setTransactionHash] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
+  const [transactionComplete, setTransactionComplete] = useState(false);
 
   const { data, write: buyProductsWrite } = useContractWrite({
     address: contractaddress,
@@ -67,10 +68,11 @@ const Cart = () => {
 
   useEffect(() => {
     if (isSuccess) {
+      setTransactionComplete(true); // Set transaction to complete upon success
+
       setShowNotification(true);
       clearCart(address);
-      const event = new Event("cartUpdated");
-      window.dispatchEvent(event);
+
       updateOrdersForUser().then(() => {
         console.log("Order list updated!");
       });
@@ -157,11 +159,23 @@ const Cart = () => {
 
       // Set transaction hash to state
       setTransactionHash(tx?.transactionHash);
+      const event = new Event("cartUpdated");
+      window.dispatchEvent(event);
     } catch (error) {
       console.error("Error buying products:", error);
       alert("Failed to buy products.");
     }
   };
+
+  if (transactionComplete) {
+    return (
+      <div className="flex flex-col max-w-screen-lg mx-auto p-8 text-gray-50 min-h-screen">
+        <h1 className="text-3xl mb-6">Transaction Successful!</h1>
+        <p>Your items will be delivered to the following address:</p>
+        <p>{deliveryAddress}</p>
+      </div>
+    );
+  }
   return (
     <>
       {showNotification && (
