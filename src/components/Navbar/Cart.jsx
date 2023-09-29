@@ -58,6 +58,8 @@ const Cart = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Cart cleared:", data);
+        const event = new Event("cartUpdated");
+        window.dispatchEvent(event);
       } else {
         console.log("Failed to clear cart:", response.status);
       }
@@ -71,11 +73,11 @@ const Cart = () => {
       setTransactionComplete(true); // Set transaction to complete upon success
 
       setShowNotification(true);
-      clearCart(address);
 
       updateOrdersForUser().then(() => {
         console.log("Order list updated!");
       });
+      clearCart(address);
     }
   }, [isLoading, isSuccess]);
 
@@ -159,8 +161,6 @@ const Cart = () => {
 
       // Set transaction hash to state
       setTransactionHash(tx?.transactionHash);
-      const event = new Event("cartUpdated");
-      window.dispatchEvent(event);
     } catch (error) {
       console.error("Error buying products:", error);
       alert("Failed to buy products.");
@@ -169,36 +169,64 @@ const Cart = () => {
 
   if (transactionComplete) {
     return (
-      <div className="flex flex-col max-w-screen-lg mx-auto p-8 text-gray-50 min-h-screen">
-        <h1 className="text-3xl mb-6">Transaction Successful!</h1>
-        <p>Your items will be delivered to the following address:</p>
-        <p>{deliveryAddress}</p>
+      <div className="flex flex-col items-center justify-center max-w-screen-lg mx-auto p-8 text-gray-50 min-h-screen bg-slate-900">
+        {showNotification && (
+          <div className="fixed top-0 right-0 z-50">
+            <AnimatePresence>
+              <Notification
+                message="Successfully Purchased!"
+                subMessage={
+                  <a
+                    href={`https://mumbai.polygonscan.com/tx/${data.hash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View your transaction
+                  </a>
+                }
+                color="#44C997"
+                onClose={() => setShowNotification(false)}
+              />
+            </AnimatePresence>
+          </div>
+        )}
+
+        <div className="text-center">
+          <h1 className="text-4xl mb-6 font-bold">Transaction Successful!</h1>
+          <p className="text-2xl mb-4">Thank you for your purchase!</p>
+        </div>
+
+        <div className="w-full p-8 rounded-md bg-white text-black shadow-lg">
+          <h2 className="text-xl mb-4 font-medium">Order Details:</h2>
+          <p>
+            <strong>Delivery Address:</strong> {deliveryAddress}
+          </p>
+          <p>
+            <strong>Total Cost:</strong> ${totalCost.toFixed(2)}
+          </p>
+          <p>
+            <strong>Estimated Delivery Time:</strong> 3-5 business days
+          </p>
+          <ul className="list-disc list-inside mt-4">
+            {cart.items.map((item, idx) => (
+              <li key={idx}>
+                {item.name} - {item.size} (Quantity: {item.quantity})
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-8">
+          <a href="/" className="text-blue-400 hover:text-blue-600">
+            Continue Shopping
+          </a>
+        </div>
       </div>
     );
   }
+
   return (
     <>
-      {showNotification && (
-        <div className="fixed top-0 right-0 z-50">
-          <AnimatePresence>
-            <Notification
-              message="Successfully Purchased!"
-              subMessage={
-                <a
-                  href={`https://mumbai.polygonscan.com/tx/${data.hash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View your transaction
-                </a>
-              }
-              color="#44C997"
-              onClose={() => setShowNotification(false)}
-            />
-          </AnimatePresence>
-        </div>
-      )}
-
       <div className="flex flex-col max-w-screen-lg mx-auto p-8 text-gray-50 min-h-screen">
         <h1 className="text-3xl mb-6">Your Cart</h1>
         {cart.items.length === 0 ? (
