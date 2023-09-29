@@ -4,6 +4,8 @@ import { useAccount } from "wagmi";
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const { address, isConnecting, isDisconnected } = useAccount();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -16,7 +18,7 @@ const Orders = () => {
         if (!Array.isArray(data)) {
           data = [];
         }
-
+        data.sort((a, b) => b.id - a.id);
         setOrders(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -28,10 +30,13 @@ const Orders = () => {
     }
   }, [address]);
 
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentOrders = orders.slice(startIndex, startIndex + itemsPerPage);
+
   return (
     <div className="p-6 bg-slate-900 min-h-screen">
       <div className="max-w-3xl mx-auto space-y-4">
-        {orders.map((order) => (
+        {currentOrders.map((order) => (
           <div
             key={order.id}
             className="p-4 bg-slate-900 shadow-lg rounded-md  "
@@ -100,6 +105,7 @@ const Orders = () => {
                               autoPlay
                               loop
                               className="mt-2"
+                              lazy
                             >
                               <source
                                 src={
@@ -130,6 +136,31 @@ const Orders = () => {
             </div>
           </div>
         ))}
+      </div>
+      <div className="pagination flex justify-center items-center mt-8">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          className={`px-4 py-2 text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-l-md focus:outline-none focus:border-slate-600 focus:ring focus:ring-slate-200 focus:ring-opacity-50 w-24 ${
+            currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <span className="px-4 py-2 bg-slate-700 text-slate-200 border border-slate-800">
+          Page {currentPage}
+        </span>
+        <button
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          className={`px-4 py-2 text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-r-md focus:outline-none focus:border-slate-600 focus:ring focus:ring-slate-200 focus:ring-opacity-50 w-24 ${
+            currentPage * 5 >= orders.length
+              ? "opacity-50 cursor-not-allowed"
+              : ""
+          }`}
+          disabled={currentPage * 5 >= orders.length}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
