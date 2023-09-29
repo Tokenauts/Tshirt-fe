@@ -147,7 +147,7 @@ const Product = () => {
   };
 
   return (
-    <div className="flex w-full h-full p-12 bg-slate-900     max-w-7xl mx-auto min-h-screen">
+    <div className="flex flex-col md:flex-row w-full h-full p-4 md:p-12 bg-slate-900 max-w-7xl mx-auto min-h-screen">
       {notifications.map((notification, index) => (
         <div
           key={notification.id}
@@ -168,14 +168,20 @@ const Product = () => {
 
       {/* Video Section */}
       <motion.div
-        className="flex-1 p-6 bg-slate-900 rounded-lg"
+        className="flex-1 p-4 md:p-6 bg-slate-900 rounded-lg mb-4 md:mb-0"
         variants={videoVariants}
         initial="hidden"
         animate="visible"
       >
-        <div className="flex-1 p-6 bg-slate-900     ">
+        <div className="flex-1 p-4 md:p-6 bg-slate-900">
           {videoHash && (
-            <video className="h-full" src={videoHash} autoPlay muted loop>
+            <video
+              className="h-full w-full object-cover"
+              src={videoHash}
+              autoPlay
+              muted
+              loop
+            >
               Your browser does not support the video tag.
             </video>
           )}
@@ -184,12 +190,12 @@ const Product = () => {
 
       {/* Product Information Section */}
       <motion.div
-        className="flex-1 p-6 ml-12 bg-white rounded-lg"
+        className="flex-1 p-4 md:p-6 ml-0 md:ml-12 bg-white rounded-lg"
         variants={infoVariants}
         initial="hidden"
         animate="visible"
       >
-        <div className="flex-1 p-6 ml-12 bg-white rounded-lg">
+        <div className="flex-1 p-4 md:p-6 ml-0 md:ml-12 bg-white rounded-lg">
           <h2 className="text-2xl font-bold">{product.name}</h2>
           <p className="mt-4 mb-8 text-gray-700">{product.description}</p>
           <h3 className="text-xl font-bold">Price: ${product.price}</h3>
@@ -197,7 +203,7 @@ const Product = () => {
           {/* Sizes */}
           <div className="mt-6">
             <label className="block mb-2 text-lg font-medium">Size:</label>
-            <div className="flex space-x-4">
+            <div className="flex flex-wrap space-x-2 md:space-x-4">
               {["XS", "S", "M", "L", "XL"].map((size) => (
                 <button
                   key={size}
@@ -214,8 +220,6 @@ const Product = () => {
             </div>
           </div>
 
-          {/* Delivery Address */}
-
           {/* Cart Operations */}
           <div className="mt-6">
             <button
@@ -230,7 +234,7 @@ const Product = () => {
                 }
                 addToCart(product, selectedSize);
               }}
-              className="w-40 p-4 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+              className="w-full md:w-40 p-4 text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
               Add to cart
             </button>
