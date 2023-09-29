@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 import Loading from "../loading";
-
+import Notification from "../Navbar/Notification";
 import { motion } from "framer-motion"; // Import framer-motion
 
 const contractaddress = "0x6edA69F4367deD9221aF2d96ADbEb52b139e9aCE";
@@ -15,6 +15,7 @@ const Product = () => {
   const { id } = useParams();
   const { address, isConnecting, isDisconnected } = useAccount();
   const [isLoading, setIsLoading] = useState(true); // New state for loading
+  const [notifications, setNotifications] = useState([]);
 
   const videoHash = product?.fileTypes.includes("video")
     ? product.fileHashes[product.fileTypes.indexOf("video")]
@@ -72,6 +73,25 @@ const Product = () => {
       if (response.ok) {
         const data = await response.json();
         setCart(data);
+
+        const newNotification = {
+          id: new Date().getTime(), // or some other unique ID logic
+          message: "Product Added",
+          subMessage: "Successfully added to cart.",
+          color: "#44C997",
+        };
+
+        setNotifications((prevNotifications) => [
+          ...prevNotifications,
+          newNotification,
+        ]);
+
+        setTimeout(() => {
+          setNotifications((prev) =>
+            prev.filter((n) => n.id !== newNotification.id)
+          );
+        }, 3000);
+
         const event = new Event("cartUpdated");
         window.dispatchEvent(event);
       } else {
@@ -97,6 +117,8 @@ const Product = () => {
       console.error("Failed to get cart:", err);
     }
   };
+
+  // Function to update orders for user
 
   if (isLoading) {
     return (
@@ -125,7 +147,25 @@ const Product = () => {
   };
 
   return (
-    <div className="flex w-full h-full p-12 bg-slate-900     max-w-7xl mx-auto">
+    <div className="flex w-full h-full p-12 bg-slate-900     max-w-7xl mx-auto min-h-screen">
+      {notifications.map((notification, index) => (
+        <div
+          key={notification.id}
+          className={`fixed top-${index * 12} right-0 z-50`}
+        >
+          <Notification
+            message={notification.message}
+            subMessage={notification.subMessage}
+            color={notification.color}
+            onClose={() =>
+              setNotifications((prev) =>
+                prev.filter((n) => n.id !== notification.id)
+              )
+            }
+          />
+        </div>
+      ))}
+
       {/* Video Section */}
       <motion.div
         className="flex-1 p-6 bg-slate-900 rounded-lg"

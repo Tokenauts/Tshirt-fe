@@ -9,10 +9,10 @@ const Notification = ({ message, subMessage, color, onClose }) => {
         initial={{ opacity: 0, x: 300 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 300 }}
-        transition={{ type: "spring", damping: 20, stiffness: 150 }}
-        className="flex h-screen"
+        transition={{ type: "spring", damping: 30, stiffness: 150 }}
+        className="flex "
       >
-        <div className="flex h-screen">
+        <div className="flex mt-16">
           <div className="m-auto">
             <div className="bg-white rounded-lg border-gray-300 border p-3 shadow-lg">
               <div className="flex flex-row">

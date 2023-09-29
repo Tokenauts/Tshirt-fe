@@ -9,10 +9,10 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/getOrdersByUser/${address}`
+          `https://cooperative-shoulder-pads-colt.cyclic.cloud/getOrdersByUser/${address}`
         );
         let data = await response.json();
-
+        console.log(data);
         if (!Array.isArray(data)) {
           data = [];
         }
@@ -23,15 +23,20 @@ const Orders = () => {
       }
     };
 
-    fetchOrders();
-  }, []);
+    if (address) {
+      fetchOrders();
+    }
+  }, [address]);
 
   return (
     <div className="p-6 bg-slate-900 min-h-screen">
       <div className="max-w-3xl mx-auto space-y-4">
         {orders.map((order) => (
-          <div key={order.id} className="p-4 bg-slate-800 shadow-lg rounded-md">
-            <div className="flex justify-between items-center mb-4">
+          <div
+            key={order.id}
+            className="p-4 bg-slate-900 shadow-lg rounded-md  "
+          >
+            <div className="flex justify-between items-center mb-4 border-black">
               <h2 className="text-2xl font-semibold text-slate-200">
                 Order #{order.id}
               </h2>
@@ -87,7 +92,7 @@ const Orders = () => {
                           </span>
                         </div>
                         <div className="mt-2">
-                          {product.fileType.includes("video") && (
+                          {product.fileTypes.includes("video") && (
                             <video
                               width="320"
                               height="180"
@@ -98,8 +103,8 @@ const Orders = () => {
                             >
                               <source
                                 src={
-                                  product.fileHash[
-                                    product.fileType.indexOf("video")
+                                  product.fileHashes[
+                                    product.fileTypes.indexOf("video")
                                   ]
                                 }
                                 type="video/mp4"
