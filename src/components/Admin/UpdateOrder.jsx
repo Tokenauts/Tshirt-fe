@@ -3,7 +3,7 @@ import { useContractWrite } from "wagmi";
 import ABI from "../../utils/abi.json";
 
 const UpdateOrderStatus = () => {
-  const contractaddress = "0x6edA69F4367deD9221aF2d96ADbEb52b139e9aCE";
+  const contractaddress = "0xBba11Ec5cc2e1B04f92457Ac0a7736162EBBFE5A";
 
   // State for orders
   const [orders, setOrders] = useState([

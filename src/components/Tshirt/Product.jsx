@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import { useAccount } from "wagmi";
 import Loading from "../loading";
 import Notification from "../Navbar/Notification";
 import { motion } from "framer-motion"; // Import framer-motion
 
-const contractaddress = "0x6edA69F4367deD9221aF2d96ADbEb52b139e9aCE";
+const contractaddress = "0xBba11Ec5cc2e1B04f92457Ac0a7736162EBBFE5A";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
@@ -16,6 +18,7 @@ const Product = () => {
   const { address, isConnecting, isDisconnected } = useAccount();
   const [isLoading, setIsLoading] = useState(true); // New state for loading
   const [notifications, setNotifications] = useState([]);
+  const navigate = useNavigate();
 
   const videoHash = product?.fileTypes.includes("video")
     ? product.fileHashes[product.fileTypes.indexOf("video")]
@@ -173,6 +176,13 @@ const Product = () => {
         initial="hidden"
         animate="visible"
       >
+        {" "}
+        <button
+          onClick={() => navigate(-1)}
+          className="w-16 p-2 text-white bg-gray-500 rounded-md hover:bg-gray-600 mb-4"
+        >
+          &lt;{" "}
+        </button>
         <div className="flex-1 p-4 md:p-6 bg-slate-900">
           {videoHash && (
             <video

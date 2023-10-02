@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
-
+import Loading from "./loading";
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const { address, isConnecting, isDisconnected } = useAccount();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const [isLoading, setIsLoading] = useState(true); // New state for loading
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
+        setIsLoading(true); // Set loading to true before fetching
+
         const response = await fetch(
           `https://cooperative-shoulder-pads-colt.cyclic.cloud/getOrdersByUser/${address}`
         );
@@ -20,6 +23,7 @@ const Orders = () => {
         }
         data.sort((a, b) => b.id - a.id);
         setOrders(data);
+        setIsLoading(false); // Set loading to false once done
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
@@ -32,7 +36,9 @@ const Orders = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentOrders = orders.slice(startIndex, startIndex + itemsPerPage);
-
+  if (isLoading) {
+    return <Loading />; // Show the Loading component while data is being fetched
+  }
   return (
     <div className="p-6 bg-slate-900 min-h-screen">
       <div className="max-w-3xl mx-auto space-y-4">

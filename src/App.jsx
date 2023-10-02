@@ -8,7 +8,6 @@ import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Hero/Footer";
 import Cart from "./components/Navbar/Cart";
 import Orders from "./components/Orders";
-
 function App() {
   return (
     <Router>
@@ -22,7 +21,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />{" "}
           <Route path="/orders" element={<Orders />} />{" "}
         </Routes>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </Router>
   );

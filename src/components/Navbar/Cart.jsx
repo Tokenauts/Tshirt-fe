@@ -3,14 +3,9 @@ import { useContractWrite, useWaitForTransaction } from "wagmi";
 import ABI from "../../utils/abi.json";
 import { useAccount } from "wagmi";
 import Notification from "./Notification";
-const contractaddress = "0x6edA69F4367deD9221aF2d96ADbEb52b139e9aCE";
+const contractaddress = "0xBba11Ec5cc2e1B04f92457Ac0a7736162EBBFE5A";
 import { motion, AnimatePresence } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckCircle,
-  faTruck,
-  faReceipt,
-} from "@fortawesome/free-solid-svg-icons";
+import Loading from "../loading";
 const Cart = () => {
   const [cart, setCart] = useState({ items: [] });
   const [deliveryAddress, setDeliveryAddress] = useState("");
@@ -19,6 +14,8 @@ const Cart = () => {
   const [transactionHash, setTransactionHash] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [transactionComplete, setTransactionComplete] = useState(false);
+  const [isCartLoading, setIsCartLoading] = useState(true); // New state for cart loading
+  const [isTransactionLoading, setIsTransactionLoading] = useState(false); // New state for transaction loading
 
   const { data, write: buyProductsWrite } = useContractWrite({
     address: contractaddress,
@@ -89,6 +86,8 @@ const Cart = () => {
 
   const fetchCartFromServer = async () => {
     try {
+      setIsCartLoading(true); // Set cart loading to true before fetching
+
       const response = await fetch(
         `https://cooperative-shoulder-pads-colt.cyclic.cloud/getcart/${address}`
       );
@@ -96,6 +95,8 @@ const Cart = () => {
       setCart(serverCart);
     } catch (error) {
       console.error("Error fetching cart from server:", error);
+    } finally {
+      setIsCartLoading(false); // Set cart loading to false once done
     }
   };
 
@@ -156,6 +157,8 @@ const Cart = () => {
 
   const handleBuyProducts = async () => {
     try {
+      setIsTransactionLoading(true); // Set transaction loading to true before initiating transaction
+
       const productIds = cart.items.map((item) => item.productId);
       const sizes = cart.items.map((item) => item.size);
       const quantities = cart.items.map((item) => item.quantity);
@@ -170,8 +173,13 @@ const Cart = () => {
     } catch (error) {
       console.error("Error buying products:", error);
       alert("Failed to buy products.");
+    } finally {
+      setIsTransactionLoading(false); // Set transaction loading to false once transaction is done
     }
   };
+  if (isCartLoading) {
+    return <Loading />; // Show the Loading component while cart data is being fetched
+  }
 
   if (transactionComplete) {
     return (
@@ -223,7 +231,7 @@ const Cart = () => {
         </div>
 
         <div className="mt-8">
-          <a href="/" className="text-blue-400 hover:text-blue-600">
+          <a href="/Browse" className="text-blue-400 hover:text-blue-600">
             Continue Shopping
           </a>
         </div>

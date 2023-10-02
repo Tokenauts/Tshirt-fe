@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Card from "./Card";
 import Loading from "../loading";
 import { motion } from "framer-motion";
+import Sidebar from "../Navbar/Sidebar";
 const EXPRESS_SERVER_URL =
   "https://cooperative-shoulder-pads-colt.cyclic.cloud/products";
 
@@ -52,28 +53,31 @@ const GetProduct = () => {
   }
 
   return (
-    <motion.div
-      className="items-center w-full px-5 py-24 mx-auto md:px-12 lg:px-16 max-w-7xl"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {" "}
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
-        {products.map((product, index) => (
-          <li key={index} className="rounded">
-            <Card
-              imgSrc={product.fileHashes[0]} // Reference `fileHashes` here
-              imgAlt={product.name}
-              title={product.name}
-              description={product.description}
-              price={product.price}
-              productId={product.id}
-            />
-          </li>
-        ))}
-      </ul>
-    </motion.div>
+    <div className="flex">
+      <Sidebar className="z-10" />
+      <motion.div
+        className="items-center w-full px-5 py-24 mx-auto md:px-12 lg:px-16 max-w-7xl ml-64" // Add some left margin to make room for the sidebar
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <ul className="grid grid-cols-2  md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 mx-auto">
+          {products.map((product, index) => (
+            <li key={index} className="rounded">
+              <Card
+                imgSrc={product.fileHashes[0]} // Reference `fileHashes` here
+                imgAlt={product.name}
+                title={product.name}
+                description={product.description}
+                price={product.price}
+                productId={product.id}
+              />
+            </li>
+          ))}
+        </ul>
+      </motion.div>
+      <cardComponent />
+    </div>
   );
 };
 

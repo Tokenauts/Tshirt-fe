@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useContractWrite } from "wagmi";
 import ABI from "../../utils/abi.json";
-import { useAccount } from "wagmi";
 
 const AddProduct = () => {
   const pinataApiKey = "108cc1670185cc3651d6";
   const pinataSecretApiKey =
     "10ba300f81944bcec510d3bd8380de5c7ef04a02c29dcfba097a38e495c1aa41";
   const url = "https://api.pinata.cloud/pinning/pinFileToIPFS";
-  const contractaddress = "0x6edA69F4367deD9221aF2d96ADbEb52b139e9aCE";
+  const contractaddress = "0xBba11Ec5cc2e1B04f92457Ac0a7736162EBBFE5A";
   const handleInputChange = (field, value, productIndex) => {
     const newProducts = [...products];
     newProducts[productIndex][field] = value;
